@@ -4,6 +4,11 @@ import (
 	"errors"
 )
 
+type CustomerRepository interface {
+	Store(customer Customer) error
+	FindById(id int) Customer
+}
+
 type ItemRepository interface {
 	Store(item Item) error
 	FindById(id int) Item
@@ -32,12 +37,13 @@ type Order struct {
 	Items    []Item
 }
 
-func (order *Order) AddItem(item Item) error {
+func (order *Order) Add(item Item) error {
 	if !item.Available {
 		return errors.New("Cannot add unavailable items to order")
 	}
-	if order.value() > 250.00 {
-		return errors.New("An order may not exceed a total value of $250.00")
+	if order.value() + item.Value > 250.00 {
+		return errors.New(`An order may not exceed
+			a total value of $250.00`)
 	}
 	order.Items = append(order.Items, item)
 	return nil

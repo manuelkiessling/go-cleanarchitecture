@@ -1,23 +1,21 @@
 package repositories
 
-// Difference between interfaces and infrastructure: the latter has nothing to do with your application at hand
-
 import (
-	"application"
+	"usecases"
 	"domain"
 	"strconv"
 )
 
 type FakeUserRepo struct{}
 
-func (r FakeUserRepo) Store(user application.User) error {
+func (r FakeUserRepo) Store(user usecases.User) error {
 	return nil
 }
 
-func (r FakeUserRepo) FindById(id int) application.User {
-	u := application.User{}
+func (r FakeUserRepo) FindById(id int) usecases.User {
+	u := usecases.User{}
 	u.Id = 111
-	u.CustomerId = 555
+	u.Customer = domain.Customer{Id: 555}
 	u.IsAdmin = false
 	return u
 }

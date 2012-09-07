@@ -1,23 +1,23 @@
 package main
 
 import (
-	"application"
+	"usecases"
 	"interfaces"
 	"interfaces/repositories"
 	"net/http"
 )
 
 func main() {
-	orderManager := application.OrderManager{}
-	orderManager.UserRepository = new(repositories.FakeUserRepo)
-	orderManager.OrderRepository = new(repositories.FakeOrderRepo)
-	orderManager.ItemRepository = new(repositories.FakeItemRepo)
+	orderInteractor := usecases.OrderInteractor{}
+	orderInteractor.UserRepository = new(repositories.FakeUserRepo)
+	orderInteractor.OrderRepository = new(repositories.FakeOrderRepo)
+	orderInteractor.ItemRepository = new(repositories.FakeItemRepo)
 
-	webservice := interfaces.Webservice{}
-	webservice.OrderManager = orderManager
+	handler := interfaces.WebserviceHandler{}
+	handler.OrderInteractor = orderInteractor
 
 	http.HandleFunc("/orders", func(res http.ResponseWriter, req *http.Request) {
-		webservice.HandleShowOrder(res, req)
+		handler.ShowOrder(res, req)
 	})
 	http.ListenAndServe(":8080", nil)
 }
