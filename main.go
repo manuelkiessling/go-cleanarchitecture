@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	orderInteractor := usecases.OrderInteractor{}
+	orderInteractor := new(usecases.OrderInteractor)
 	orderInteractor.UserRepository = new(repositories.FakeUserRepo)
 	orderInteractor.OrderRepository = new(repositories.FakeOrderRepo)
 	orderInteractor.ItemRepository = new(repositories.FakeItemRepo)

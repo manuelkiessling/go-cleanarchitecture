@@ -7,15 +7,17 @@ import (
 	"strconv"
 )
 
-// This Layer knows about HTTP requests and responses, but not about listening to tcp etc.
+type OrderInteractor interface {
+	Items(userId, orderId int) ([]usecases.Item, error)
+	Add(userId, orderId, itemId int) error
+}
 
 type WebserviceHandler struct {
-	OrderInteractor usecases.OrderInteractor
+	OrderInteractor OrderInteractor
 }
 
 func (handler WebserviceHandler) ShowOrder(res http.ResponseWriter, req *http.Request) {
-	userId, _ := strconv.Atoi(req.FormValue("userId")) // We could handle HTTP auth issues here (Session, API token check etc), but whether or not a user may see an order totally is an issue of the application layer!
-                                                     // litmus test: we would have to re-implement the auth check if we wrote a console script as the frontend for the app
+	userId, _ := strconv.Atoi(req.FormValue("userId"))
 	orderId, _ := strconv.Atoi(req.FormValue("orderId"))
 	items, _ := handler.OrderInteractor.Items(userId, orderId)
 	for i := range items {
