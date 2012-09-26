@@ -6,6 +6,7 @@ import (
 
 type Logger struct {}
 
-function (logger Logger) Log(message string) error {
+func (logger Logger) Log(message string) error {
 	fmt.Println("Log message: " + message)
+	return nil
 }

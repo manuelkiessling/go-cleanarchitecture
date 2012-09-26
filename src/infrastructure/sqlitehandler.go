@@ -1,28 +1,40 @@
 package infrastructure
 
+import (
+	"fmt"
+	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
+	"interfaces/repositories"
+)
+
 type SqliteHandler struct {
+	Conn *sql.DB
 }
 
-func (db SqliteHandler) init() {
+func (handler *SqliteHandler) Execute(statement string) repositories.Row {
+	fmt.Println(statement)
+	rows, err := handler.Conn.Query(statement)
+	if err != nil {
+		fmt.Println(err)
+		return new(SqliteRow)
+	}
+	rows.Next()
+	row := new(SqliteRow)
+	row.Rows = rows
+	return row
 }
 
-func (db SqliteHandler) Begin() {
+type SqliteRow struct {
+	Rows *sql.Rows
 }
 
-func (db SqliteHandler) Prepare(statement string) Statement {
+func (r SqliteRow) Scan(dest ...interface{}) {
+	r.Rows.Scan(dest...)
 }
 
-func (db SqliteHandler) Commit() {}
-
-type SqliteStatement struct {
-}
-
-func (stmt SqliteStatement) Execute(values ...string) SqliteRow {
-	return SqliteRow{}
-}
-
-type SqliteRow struct {}
-
-func (r SqliteRow) getFieldValue(name string) string {
-	return val
+func NewSqliteHandler(dbfileName string) *SqliteHandler {
+	conn, _ := sql.Open("sqlite3", dbfileName)
+	sqliteHandler := new(SqliteHandler)
+	sqliteHandler.Conn = conn
+	return sqliteHandler
 }

@@ -3,52 +3,43 @@ package repositories
 import (
 	"usecases"
 	"domain"
-	"strconv"
+	"fmt"
 )
 
 type dbHandler interface {
-	Begin()
-	Prepare(query string) Statement
-	Commit()
-}
-
-type Statement interface {
-	Execute(values ...string) Row
+	Execute(query string) Row
 }
 
 type Row interface {
-	getFieldValue(name string) string
+	Scan(dest ...interface{})
 }
 
-type UserRepo struct {
-	Db dbHandler
+type DbUserRepo struct {
+	DbHandler dbHandler
 }
 
-func (repo UserRepo) Store(user usecases.User) error {
-	repo.Db.Begin()
-	stmt := repo.Db.Prepare("INSERT INTO users (id, customer_id, is_admin) VALUES (?, ?, ?)")
+func (repo DbUserRepo) Store(user usecases.User) error {
 	var isAdmin string
 	if user.IsAdmin {
-		isAdmin = "1"
+		isAdmin = "yes"
 	} else {
-		isAdmin = "0"
+		isAdmin = "no"
 	}
-	_ = stmt.Execute(strconv.Itoa(user.Id), strconv.Itoa(user.Customer.Id), isAdmin)
-	repo.Db.Commit()
+	repo.DbHandler.Execute(fmt.Sprintf("INSERT INTO users (id, customer_id, is_admin) VALUES ('%d', '%d', '%v')", user.Id, user.Customer.Id, isAdmin))
 	return nil
 }
 
-func (repo UserRepo) FindById(id int) usecases.User {
-	repo.Db.Begin()
-	stmt := repo.Db.Prepare("SELECT is_admin, customer_id FROM users WHERE id = ? LIMIT 1")
-	row := stmt.Execute(string(id))
+func (repo DbUserRepo) FindById(id int) usecases.User {
+	row := repo.DbHandler.Execute(fmt.Sprintf("SELECT is_admin, customer_id FROM users WHERE id = '%d' LIMIT 1", id))
 	u := usecases.User{}
 	u.Id = id
-	u.Customer = domain.Customer{Id: 555}
-	isAdmin := row.getFieldValue("is_admin")
+	var isAdmin string
+	var customerId int
+	row.Scan(&isAdmin, &customerId)
 	u.IsAdmin = false
-	if isAdmin == "1" {
+	if isAdmin == "yes" {
 		u.IsAdmin = true
 	}
+	u.Customer = domain.Customer{Id: customerId}
 	return u
 }

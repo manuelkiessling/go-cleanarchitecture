@@ -1,73 +1,37 @@
-package repositories
+package interfaces_test
 
 import (
+	"interfaces"
 	"testing"
-	"fmt"
 	"usecases"
 	"domain"
+	"infrastructure"
 )
 
-type testBag struct {
-	LastStatement string
-	LastValues []string
-}
+func Test_UserRepository_Store(t *testing.T) {
+	dbHandler := infrastructure.NewSqliteHandler("/var/tmp/test.sqlite")
+	dbHandler.Execute("DROP TABLE users")
+	dbHandler.Execute("CREATE TABLE users (id INTEGER, customer_id INTEGER, is_admin VARCHAR(3))")
 
-var bag testBag
+	r := new(interfaces.DbUserRepo)
+	r.DbHandler = dbHandler
 
-type testDbHandler struct {
-}
-
-func (db testDbHandler) init() {
-	
-}
-
-func (db testDbHandler) Begin() {}
-
-func (db testDbHandler) Prepare(statement string) Statement {
-	prepared := testStatement{}
-	prepared.Statement = statement
-	return prepared
-}
-
-func (db testDbHandler) Commit() {}
-
-type testStatement struct {
-	Statement string
-}
-
-func (stmt testStatement) Execute(values ...string) Row {
-	fmt.Println("executing " + stmt.Statement + "with")
-	bag.LastStatement = stmt.Statement
-	for i, value := range(values) {
-		bag.LastValues[i] = value
-		fmt.Printf("%d - %v\n", i, value)
-	}
-	return testRow{}
-}
-
-type testRow struct {}
-
-func (r testRow) getFieldValue(name string) string {
-	val := "4"
-	return val
-}
-
-func Test_UserRepository_FindById(t *testing.T) {
-	bag.LastValues = make([]string, 10)
-	r := UserRepo{}
-	r.Db = testDbHandler{}
-	u := usecases.User{}
 	c := domain.Customer{}
-	c.Id = 999
-	c.Name = "foo"
+	c.Id = 555
+	u := usecases.User{}
 	u.Id = 6
 	u.IsAdmin = true
 	u.Customer = c
 	r.Store(u)
-	if bag.LastStatement != "INSERT INTO users (id, customer_id, is_admin) VALUES (?, ?, ?)" {
+
+	u = r.FindById(6)
+	if u.Id != 6 {
 		t.Error()
 	}
-	if bag.LastValues[0] != "6" {
+	if u.Customer.Id != 555 {
+		t.Error()
+	}
+	if u.IsAdmin != true {
 		t.Error()
 	}
 }

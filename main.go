@@ -3,15 +3,21 @@ package main
 import (
 	"usecases"
 	"interfaces"
-	"interfaces/repositories"
+	"infrastructure"
 	"net/http"
 )
 
 func main() {
+	dbHandler := infrastructure.NewSqliteHandler("/var/tmp/production.sqlite")
+
 	orderInteractor := new(usecases.OrderInteractor)
-	orderInteractor.UserRepository = new(repositories.FakeUserRepo)
-	orderInteractor.OrderRepository = new(repositories.FakeOrderRepo)
-	orderInteractor.ItemRepository = new(repositories.FakeItemRepo)
+	orderInteractor.UserRepository = new(interfaces.DbUserRepo)
+	orderInteractor.ItemRepository = new(interfaces.DbItemRepo)
+	orderInteractor.OrderRepository = new(interfaces.DbOrderRepo)
+
+	orderInteractor.UserRepository.DbHandler = dbHandler
+	orderInteractor.ItemRepository.DbHandler = dbHandler
+	orderInteractor.OrderRepository.DbHandler = dbHandler
 
 	handler := interfaces.WebserviceHandler{}
 	handler.OrderInteractor = orderInteractor
