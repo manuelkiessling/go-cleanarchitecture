@@ -1,2 +1,3 @@
 src/github.com/
 *.swp
+pkg/
