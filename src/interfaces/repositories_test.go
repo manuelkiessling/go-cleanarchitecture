@@ -1,12 +1,12 @@
 package interfaces_test
 
 import (
+	"domain"
+	_ "fmt"
+	"infrastructure"
 	"interfaces"
 	"testing"
 	"usecases"
-	"domain"
-	"infrastructure"
-	_ "fmt"
 )
 
 func Test_UserRepository(t *testing.T) {
@@ -16,10 +16,10 @@ func Test_UserRepository(t *testing.T) {
 	dbHandler.Execute("CREATE TABLE users (id INTEGER, customer_id INTEGER, is_admin VARCHAR(3))")
 	dbHandler.Execute("CREATE TABLE customers (id INTEGER, name VARCHAR(42))")
 
-	handlers := make(map[string] interfaces.DbHandler)
+	handlers := make(map[string]interfaces.DbHandler)
 	handlers["DbUserRepo"] = dbHandler
 	handlers["DbCustomerRepo"] = dbHandler
-	
+
 	ur := interfaces.NewDbUserRepo(handlers)
 
 	c := domain.Customer{}
@@ -59,12 +59,12 @@ func Test_OrderRepository(t *testing.T) {
 	dbHandler.Execute("CREATE TABLE items (id INTEGER, name VARCHAR(42), value FLOAT, available VARCHAR(3))")
 	dbHandler.Execute("CREATE TABLE items2orders (item_id INTEGER, order_id INTEGER)")
 
-	handlers := make(map[string] interfaces.DbHandler)
+	handlers := make(map[string]interfaces.DbHandler)
 	handlers["DbUserRepo"] = dbHandler
 	handlers["DbCustomerRepo"] = dbHandler
 	handlers["DbOrderRepo"] = dbHandler
 	handlers["DbItemRepo"] = dbHandler
-	
+
 	ur := interfaces.NewDbUserRepo(handlers)
 	or := interfaces.NewDbOrderRepo(handlers)
 	ir := interfaces.NewDbItemRepo(handlers)
@@ -77,7 +77,7 @@ func Test_OrderRepository(t *testing.T) {
 	u.IsAdmin = true
 	u.Customer = c
 	ur.Store(u)
-	
+
 	i1 := domain.Item{}
 	i1.Id = 101
 	i1.Name = "Car"

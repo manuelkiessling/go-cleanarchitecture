@@ -1,11 +1,11 @@
 package interfaces
 
 import (
-	"usecases"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
-	"fmt"
+	"usecases"
 )
 
 type OrderInteractor interface {

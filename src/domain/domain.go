@@ -41,7 +41,7 @@ func (order *Order) Add(item Item) error {
 	if !item.Available {
 		return errors.New("Cannot add unavailable items to order")
 	}
-	if order.value() + item.Value > 250.00 {
+	if order.value()+item.Value > 250.00 {
 		return errors.New(`An order may not exceed
 			a total value of $250.00`)
 	}

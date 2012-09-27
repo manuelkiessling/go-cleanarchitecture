@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type Logger struct {}
+type Logger struct{}
 
 func (logger Logger) Log(message string) error {
 	fmt.Println("Log message: " + message)

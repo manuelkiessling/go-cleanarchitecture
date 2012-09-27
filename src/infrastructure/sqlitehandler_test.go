@@ -1,8 +1,8 @@
 package infrastructure
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func Test_SqliteHandler(t *testing.T) {
