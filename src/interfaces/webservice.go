@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"fmt"
 )
 
 type OrderInteractor interface {
@@ -20,9 +21,9 @@ func (handler WebserviceHandler) ShowOrder(res http.ResponseWriter, req *http.Re
 	userId, _ := strconv.Atoi(req.FormValue("userId"))
 	orderId, _ := strconv.Atoi(req.FormValue("orderId"))
 	items, _ := handler.OrderInteractor.Items(userId, orderId)
-	for i := range items {
-		io.WriteString(res, "item id: "+strconv.Itoa(items[i].Id)+"\n")
-		io.WriteString(res, "item name: "+items[i].Name+"\n")
-		io.WriteString(res, "item value: "+strconv.FormatFloat(items[i].Value, 'f', 2, 64)+"\n")
+	for _, item := range items {
+		io.WriteString(res, fmt.Sprintf("item id: %d\n", item.Id))
+		io.WriteString(res, fmt.Sprintf("item name: %v\n", item.Name))
+		io.WriteString(res, fmt.Sprintf("item value: %f\n", item.Value))
 	}
 }

@@ -10,20 +10,22 @@ import (
 func main() {
 	dbHandler := infrastructure.NewSqliteHandler("/var/tmp/production.sqlite")
 
+	handlers := make(map[string] interfaces.DbHandler)
+	handlers["DbUserRepo"] = dbHandler
+	handlers["DbCustomerRepo"] = dbHandler
+	handlers["DbItemRepo"] = dbHandler
+	handlers["DbOrderRepo"] = dbHandler
+
 	orderInteractor := new(usecases.OrderInteractor)
-	orderInteractor.UserRepository = new(interfaces.DbUserRepo)
-	orderInteractor.ItemRepository = new(interfaces.DbItemRepo)
-	orderInteractor.OrderRepository = new(interfaces.DbOrderRepo)
+	orderInteractor.UserRepository = interfaces.NewDbUserRepo(handlers)
+	orderInteractor.ItemRepository = interfaces.NewDbItemRepo(handlers)
+	orderInteractor.OrderRepository = interfaces.NewDbOrderRepo(handlers)
 
-	orderInteractor.UserRepository.DbHandler = dbHandler
-	orderInteractor.ItemRepository.DbHandler = dbHandler
-	orderInteractor.OrderRepository.DbHandler = dbHandler
-
-	handler := interfaces.WebserviceHandler{}
-	handler.OrderInteractor = orderInteractor
+	webserviceHandler := interfaces.WebserviceHandler{}
+	webserviceHandler.OrderInteractor = orderInteractor
 
 	http.HandleFunc("/orders", func(res http.ResponseWriter, req *http.Request) {
-		handler.ShowOrder(res, req)
+		webserviceHandler.ShowOrder(res, req)
 	})
 	http.ListenAndServe(":8080", nil)
 }

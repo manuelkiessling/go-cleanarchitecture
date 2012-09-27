@@ -5,17 +5,17 @@ import (
 )
 
 type CustomerRepository interface {
-	Store(customer Customer) error
+	Store(customer Customer)
 	FindById(id int) Customer
 }
 
 type ItemRepository interface {
-	Store(item Item) error
+	Store(item Item)
 	FindById(id int) Item
 }
 
 type OrderRepository interface {
-	Store(order Order) error
+	Store(order Order)
 	FindById(id int) Order
 }
 

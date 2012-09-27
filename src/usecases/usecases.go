@@ -6,7 +6,7 @@ import (
 )
 
 type UserRepository interface {
-	Store(user User) error
+	Store(user User)
 	FindById(id int) User
 }
 
@@ -17,9 +17,9 @@ type User struct {
 }
 
 type Item struct {
-        Id    int
-        Name  string
-        Value float64
+	Id    int
+	Name  string
+	Value float64
 }
 
 type Logger interface {
@@ -62,9 +62,9 @@ func (interactor *OrderInteractor) Add(userId, orderId, itemId int) error {
 	user := interactor.UserRepository.FindById(userId)
 	order := interactor.OrderRepository.FindById(orderId)
 	if user.Customer.Id != order.Customer.Id {
-	message  = "User #%i (customer #%i) "
-	message += "is not allowed to add items "
-	message += "to order #%i (of customer #%i)"
+		message  = "User #%i (customer #%i) "
+		message += "is not allowed to add items "
+		message += "to order #%i (of customer #%i)"
 		err := fmt.Errorf(message,
 		                  user.Id,
 		                  user.Customer.Id,
