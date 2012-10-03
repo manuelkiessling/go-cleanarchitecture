@@ -49,10 +49,9 @@ func (order *Order) Add(item Item) error {
 	return nil
 }
 
-func (order *Order) value() float64 {
-	sum := 0.0
+func (order *Order) value() (sum float64) {
 	for i := range order.Items {
-		sum = sum + order.Items[i].Value
+		sum += order.Items[i].Value
 	}
-	return sum
+	return
 }
