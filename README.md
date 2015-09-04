@@ -5,6 +5,7 @@ An example Go application demonstrating The Clean Architecture.
 
 [http://manuel.kiessling.net/2012/09/28/applying-the-clean-architecture-to-go-applications/](http://manuel.kiessling.net/2012/09/28/applying-the-clean-architecture-to-go-applications/)
 
+
 Install
 -------
 
@@ -39,8 +40,7 @@ Access the web endpoint at [http://localhost:8080/orders?userId=40&orderId=60](h
 
 To run the tests, for each module, run
 
-    cd src/infrastructure &&  go test
+    cd src/infrastructure && go test
     cd src/interfaces && go test
 
 Enjoy
-
