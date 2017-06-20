@@ -23,7 +23,7 @@ type Item struct {
 }
 
 type Logger interface {
-	Log(message string) error
+	Log(args ...interface{})
 }
 
 type OrderInteractor struct {
@@ -38,9 +38,9 @@ func (interactor *OrderInteractor) Items(userId, orderId int) ([]Item, error) {
 	user := interactor.UserRepository.FindById(userId)
 	order := interactor.OrderRepository.FindById(orderId)
 	if user.Customer.Id != order.Customer.Id {
-		message := "User #%i (customer #%i) "
+		message := "User #%d (customer #%d) "
 		message += "is not allowed to see items "
-		message += "in order #%i (of customer #%i)"
+		message += "in order #%d (of customer #%d)"
 		err := fmt.Errorf(message,
 			user.Id,
 			user.Customer.Id,
@@ -62,9 +62,9 @@ func (interactor *OrderInteractor) Add(userId, orderId, itemId int) error {
 	user := interactor.UserRepository.FindById(userId)
 	order := interactor.OrderRepository.FindById(orderId)
 	if user.Customer.Id != order.Customer.Id {
-		message = "User #%i (customer #%i) "
+		message = "User #%d (customer #%d) "
 		message += "is not allowed to add items "
-		message += "to order #%i (of customer #%i)"
+		message += "to order #%d (of customer #%d)"
 		err := fmt.Errorf(message,
 			user.Id,
 			user.Customer.Id,
@@ -75,9 +75,9 @@ func (interactor *OrderInteractor) Add(userId, orderId, itemId int) error {
 	}
 	item := interactor.ItemRepository.FindById(itemId)
 	if domainErr := order.Add(item); domainErr != nil {
-		message = "Could not add item #%i "
-		message += "to order #%i (of customer #%i) "
-		message += "as user #%i because a business "
+		message = "Could not add item #%d "
+		message += "to order #%d (of customer #%d) "
+		message += "as user #%d because a business "
 		message += "rule was violated: '%s'"
 		err := fmt.Errorf(message,
 			item.Id,
@@ -90,7 +90,7 @@ func (interactor *OrderInteractor) Add(userId, orderId, itemId int) error {
 	}
 	interactor.OrderRepository.Store(order)
 	interactor.Logger.Log(fmt.Sprintf(
-		"User added item '%s' (#%i) to order #%i",
+		"User added item '%s' (#%d) to order #%d",
 		item.Name, item.Id, order.Id))
 	return nil
 }
@@ -104,9 +104,9 @@ func (interactor *AdminOrderInteractor) Add(userId, orderId, itemId int) error {
 	user := interactor.UserRepository.FindById(userId)
 	order := interactor.OrderRepository.FindById(orderId)
 	if !user.IsAdmin {
-		message = "User #%i (customer #%i) "
+		message = "User #%d (customer #%d) "
 		message += "is not allowed to add items "
-		message += "to order #%i (of customer #%i), "
+		message += "to order #%d (of customer #%d), "
 		message += "because he is not an administrator"
 		err := fmt.Errorf(message,
 			user.Id,
@@ -118,9 +118,9 @@ func (interactor *AdminOrderInteractor) Add(userId, orderId, itemId int) error {
 	}
 	item := interactor.ItemRepository.FindById(itemId)
 	if domainErr := order.Add(item); domainErr != nil {
-		message = "Could not add item #%i "
-		message += "to order #%i (of customer #%i) "
-		message += "as user #%i because a business "
+		message = "Could not add item #%d "
+		message += "to order #%d (of customer #%d) "
+		message += "as user #%d because a business "
 		message += "rule was violated: '%s'"
 		err := fmt.Errorf(message,
 			item.Id,
@@ -133,7 +133,7 @@ func (interactor *AdminOrderInteractor) Add(userId, orderId, itemId int) error {
 	}
 	interactor.OrderRepository.Store(order)
 	interactor.Logger.Log(fmt.Sprintf(
-		"Admin added item '%s' (#%i) to order #%i",
+		"Admin added item '%s' (#%d) to order #%d",
 		item.Name, item.Id, order.Id))
 	return nil
 }

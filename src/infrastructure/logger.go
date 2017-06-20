@@ -1,12 +1,11 @@
 package infrastructure
 
 import (
-	"fmt"
+	"log"
 )
 
 type Logger struct{}
 
-func (logger Logger) Log(message string) error {
-	fmt.Println("Log message: " + message)
-	return nil
+func (logger Logger) Log(args ...interface{}) {
+	log.Println(args...)
 }
