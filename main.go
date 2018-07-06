@@ -20,6 +20,7 @@ func main() {
 	orderInteractor.UserRepository = interfaces.NewDbUserRepo(handlers)
 	orderInteractor.ItemRepository = interfaces.NewDbItemRepo(handlers)
 	orderInteractor.OrderRepository = interfaces.NewDbOrderRepo(handlers)
+	orderInteractor.Logger = new(infrastructure.Logger)
 
 	webserviceHandler := interfaces.WebserviceHandler{}
 	webserviceHandler.OrderInteractor = orderInteractor
