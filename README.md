@@ -9,23 +9,16 @@ An example Go application demonstrating The Clean Architecture.
 Install
 -------
 
-Create a new directory, where to host this project
-
-    mkdir -p $GOPATH:src/github.com/manuelkiessling/
-
 Check out the source
 
-    cd $GOPATH:src/github.com/manuelkiessling/
-    git clone https://github.com/manuelkiessling/go-cleanarchitecture
+    git clone https://github.com/manuelkiessling/go-cleanarchitecture && cd go-cleanarchitecture
 
-Setup the GOPATH to include this path
+Download modules
 
-    cd go-cleanarchitecture
-    export GOPATH=$GOPATH:`pwd`
+    go mod download
 
 Then build the project
 
-    go get
     go build
 
 Create the SQLite structure
@@ -34,14 +27,13 @@ Create the SQLite structure
 
 Run the server
 
-    go-cleanarchitecture
+    ./go-cleanarchitecture
 
 Access the web endpoint at [http://localhost:8080/orders?userId=40&orderId=60](http://localhost:8080/orders?userId=40&orderId=60)
 
 To run the tests, for each module, run
 
-    cd src/infrastructure && go test
-    cd src/interfaces && go test
+    go test ./...
 
 Enjoy.
 

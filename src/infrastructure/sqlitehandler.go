@@ -3,8 +3,9 @@ package infrastructure
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/manuelkiessling/go-cleanarchitecture/src/interfaces"
 	_ "github.com/mattn/go-sqlite3"
-	"interfaces"
 )
 
 type SqliteHandler struct {
@@ -16,7 +17,7 @@ func (handler *SqliteHandler) Execute(statement string) {
 }
 
 func (handler *SqliteHandler) Query(statement string) interfaces.Row {
-	//fmt.Println(statement)
+	// fmt.Println(statement)
 	rows, err := handler.Conn.Query(statement)
 	if err != nil {
 		fmt.Println(err)
@@ -40,7 +41,10 @@ func (r SqliteRow) Next() bool {
 }
 
 func NewSqliteHandler(dbfileName string) *SqliteHandler {
-	conn, _ := sql.Open("sqlite3", dbfileName)
+	conn, err := sql.Open("sqlite3", dbfileName)
+	if err != nil {
+		panic(err)
+	}
 	sqliteHandler := new(SqliteHandler)
 	sqliteHandler.Conn = conn
 	return sqliteHandler
