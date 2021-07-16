@@ -1,12 +1,12 @@
 package interfaces_test
 
 import (
-	"domain"
-	_ "fmt"
-	"infrastructure"
-	"interfaces"
 	"testing"
-	"usecases"
+
+	"github.com/manuelkiessling/go-cleanarchitecture/src/domain"
+	"github.com/manuelkiessling/go-cleanarchitecture/src/infrastructure"
+	"github.com/manuelkiessling/go-cleanarchitecture/src/interfaces"
+	"github.com/manuelkiessling/go-cleanarchitecture/src/usecases"
 )
 
 func Test_UserRepository(t *testing.T) {
@@ -103,7 +103,7 @@ func Test_OrderRepository(t *testing.T) {
 	o.Id = 39
 	o.Customer = c
 	o.Add(i1)
-	o.Add(i2) //fails because it's not available
+	o.Add(i2) // fails because it's not available
 	o.Add(i3)
 	or.Store(o)
 

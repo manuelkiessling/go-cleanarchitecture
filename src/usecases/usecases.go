@@ -1,8 +1,9 @@
 package usecases
 
 import (
-	"domain"
 	"fmt"
+
+	"github.com/manuelkiessling/go-cleanarchitecture/src/domain"
 )
 
 type UserRepository interface {

@@ -5,7 +5,8 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"usecases"
+
+	"github.com/manuelkiessling/go-cleanarchitecture/src/usecases"
 )
 
 type OrderInteractor interface {
@@ -18,9 +19,18 @@ type WebserviceHandler struct {
 }
 
 func (handler WebserviceHandler) ShowOrder(res http.ResponseWriter, req *http.Request) {
-	userId, _ := strconv.Atoi(req.FormValue("userId"))
-	orderId, _ := strconv.Atoi(req.FormValue("orderId"))
-	items, _ := handler.OrderInteractor.Items(userId, orderId)
+	userId, err := strconv.Atoi(req.FormValue("userId"))
+	if err != nil {
+		panic(err)
+	}
+	orderId, err := strconv.Atoi(req.FormValue("orderId"))
+	if err != nil {
+		panic(err)
+	}
+	items, err := handler.OrderInteractor.Items(userId, orderId)
+	if err != nil {
+		panic(err)
+	}
 	for _, item := range items {
 		io.WriteString(res, fmt.Sprintf("item id: %d\n", item.Id))
 		io.WriteString(res, fmt.Sprintf("item name: %v\n", item.Name))
